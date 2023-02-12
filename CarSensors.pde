@@ -1,14 +1,14 @@
 class CarSensors {
   PVector distance;
   PVector pos;
-  PVector vel;
+  PVector vel = new PVector(10, 10);
   PVector size = new PVector(10, 10);
   PVector[] sensors;
   boolean[] signals;
   int angle = 45;
-  int length = 10;
-  int second = 2;
-  
+  int length = 25;
+  float second = 2.5;
+
   //crash detection
   int whiteSensorFrameCount    = 0; //udenfor banen
   boolean currentBlueDetection = false;
@@ -18,6 +18,7 @@ class CarSensors {
   boolean lastGreenDetection;
   int     lastTimeInFrames      = 0;
   int     lapTimeInFrames       = -1;
+  int fastestLapTime = -1;
   int lapCount = 0;
   int checkPointCount = 0;
   int offroad = 0;
@@ -43,12 +44,12 @@ class CarSensors {
     return tempSensors;
   }
 
-  void display(float turnAngle) {
+  void display() {
     fill(0);
+    
     pushMatrix();
     translate(pos.x, pos.y);
     for (PVector sensor : sensors) {
-      sensor.rotate(turnAngle);
       ellipse(sensor.x, sensor.y, 10, 10);
     }
     popMatrix();
@@ -64,8 +65,8 @@ class CarSensors {
     ellipse(pos.x, pos.y, 10, 10);
   }
 
-  void update(PVector pos) {
-
+  void update(PVector pos, PVector vel) {
+    this.vel = vel;
     //Laptime calculation
     boolean currentGreenDetection =false;
     color color_car_position = get(int(pos.x), int(pos.y));
@@ -89,32 +90,42 @@ class CarSensors {
     if (lastGreenDetection && !currentGreenDetection) {  //sidst grønt - nu ikke -vi har passeret målstregen
       lapTimeInFrames = frameCount - lastTimeInFrames; //LAPTIME BEREGNES - frames nu - frames sidst
       lastTimeInFrames = frameCount;
+      if (fastestLapTime == -1 || lapTimeInFrames < fastestLapTime){
+        fastestLapTime = lapTimeInFrames;
+      }
       lapCount++;
     }
     lastGreenDetection = currentGreenDetection; //Husker om der var grønt sidst
     //count clockWiseRotationFrameCounter
 
     this.pos = pos;
-    pushMatrix();
-    translate(pos.x + (size.x / 2), pos.y + (size.y / 2));
-    //Front Sensore
-    sensors[0] = new PVector(length, 0);
-    sensors[1] = new PVector((length * second), 0);
-
-    //Venstre Sensore
-    sensors[2] = new PVector(Math.abs((float)(Math.sin(angle - 90)) * length), -(float)(Math.abs(Math.sin(angle))) * length);
-    sensors[3] = new PVector(Math.abs(((float)(Math.sin(angle - 90)) * length) * second), -((float)(Math.abs(Math.sin(angle))) * length * 2));
-
-    //Højre Sensore
-    sensors[4] = new PVector(((float)(Math.abs(Math.sin(angle - 90) * length))), (float)(Math.abs(Math.sin(angle))) * length);
-    sensors[5] = new PVector(Math.abs(((float)(Math.sin(angle - 90)) * length) * second), ((float)(Math.abs(Math.sin(angle)) * length * 2)));
-    popMatrix();
+    updateSensorVectors(vel);
     overGround();
   }
-
+  void updateSensorVectors(PVector vel) {
+    if (vel.mag()!=0) {
+      sensors[0].set(vel);
+      sensors[0].normalize();
+      sensors[0].mult(length);
+      sensors[1].set(vel);
+      sensors[1].normalize();
+      sensors[1].mult(length*second);
+    }
+    sensors[2].set(sensors[0]);
+    sensors[2].rotate(angle);
+    
+    sensors[3].set(sensors[1]);
+    sensors[3].rotate(angle);
+    
+    sensors[4].set(sensors[0]);
+    sensors[4].rotate(-angle);
+    
+    sensors[5].set(sensors[1]);
+    sensors[5].rotate(-angle);
+  }
   void overGround() {
     for (int i = 0; i < sensors.length; i++) {
-      signals[i] = get((int)sensors[i].x, (int)sensors[i].y) == -1;
+      signals[i] = get( (int) (pos.x + sensors[i].x), (int)(pos.y + sensors[i].y)) == -1;
     }
   }
 }
