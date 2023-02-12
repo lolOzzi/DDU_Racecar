@@ -4,7 +4,7 @@ import java.lang.Math;
 
 PImage trackImage;
 float mutationRate = 0.01;
-int populationSize = 100;
+int populationSize = 30;
 CarSystem carSystem       = new CarSystem(populationSize);
 
 void setup() {

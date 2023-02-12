@@ -3,7 +3,6 @@ class CarController {
   float variance = 2;
   float carRot;
   float fitness = 0;
-  float turnAngle = 0;
   Car car = new Car();
   CarSensors carSensors = new CarSensors();
   NeuralNetwork neuralNetwork = new NeuralNetwork(variance);
@@ -29,36 +28,30 @@ class CarController {
         child.neuralNetwork.weights[i] += random(-0.1, 0.1);
       }
     }
-    for (int i = 0; i < child.neuralNetwork.biases.length; i++) {
+    for (int i = 0; i < child.neuralNetwork.bias.length; i++) {
       int rand = int(random(0, 2));
       if (rand == 1) {
-        child.neuralNetwork.biases[i] = partner.neuralNetwork.biases[i];
+        child.neuralNetwork.bias[i] = partner.neuralNetwork.bias[i];
       } else {
-        child.neuralNetwork.biases[i] = neuralNetwork.biases[i];
+        child.neuralNetwork.bias[i] = neuralNetwork.bias[i];
       }
       if (random(1) < mutationRate) {
-        child.neuralNetwork.biases[i] += random(-0.1, 0.1);
+        child.neuralNetwork.bias[i] += random(-0.1, 0.1);
       }
     }
     return child;
   }
 
   void update() {
-
-    float[] x = new float[6];
-    for (int i = 0; i < carSensors.signals.length; i++) {
-      x[i] = int(carSensors.signals[i]);
-    }
-    turnAngle = neuralNetwork.getOutput(x[1], x[3], x[5]);
     car.turnCar(turnAngle);
     car.update();
-    carSensors.update(car.pos, car.vel);
+    carSensors.update(car.pos);
   }
 
   void display() {
 
     car.display();
-    carSensors.display();
+    carSensors.display(0);
   }
 
   CarController() {

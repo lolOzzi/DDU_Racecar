@@ -17,25 +17,23 @@ class Car {
   }
 
   void turnCar(float turnAngle) {
-    
     this.turnAngle = turnAngle;
     vel.rotate(turnAngle);
   }
 
-
   void display() {
     fill(0);
     pushMatrix();
-    translate(pos.x - (size.x/2), pos.y - (size.y/2));
+    translate(pos.x, pos.y);
     rotate(turnAngle);
     rect(0, 0, size.x, size.y);
     popMatrix();
   }
 
   void overGround() {
+    println(pos);
     color color_car_pos = get(int(pos.x), int(pos.y));
     if (color_car_pos == -1) {
-      print("I Am Over");
-    } else print("I Am Not Over");
+    } else   ;
   }
 }
