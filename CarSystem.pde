@@ -89,7 +89,7 @@ class CarSystem {
     }
     for (int i = 0; i < bestLapCounts.size(); i++) {
       fill(0);
-      String info = "Gen: " + (i+1) + ", Best Lap Count: " + bestLapCounts.get(i) +  ", Avg. Lap Count: " + avgLapCounts.get(i) + ", Best lap time: " +  round(((float) bestLapTimes.get(i) / 60.0 )*100.0) / 100.0 + " sek.";
+      String info = "Gen: " + (i+1) + ", Best Lap Count: " + bestLapCounts.get(i) +  ", Avg. Lap Count: " + avgLapCounts.get(i) + ", Best lap time: " +  round(((float) bestLapTimes.get(i) / 60.0 )*100.0) / 100.0 + " sec.";
       text(info, width-400, 50+i*10);
     }
   }
