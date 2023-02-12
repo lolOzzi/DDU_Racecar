@@ -3,6 +3,7 @@ class CarController {
   float variance = 2;
   float carRot;
   float fitness = 0;
+  float turnAngle = 0;
   Car car = new Car();
   CarSensors carSensors = new CarSensors();
   NeuralNetwork neuralNetwork = new NeuralNetwork(variance);
@@ -43,15 +44,22 @@ class CarController {
   }
 
   void update() {
-    car.turnCar(20);
+
     car.update();
+    float[] x = new float[6];
+    for (int i = 0; i < carSensors.signals.length; i++) {
+      x[i] = int(carSensors.signals[i]);
+    }
+    turnAngle = neuralNetwork.getOutput(x);
+    car.turnCar(turnAngle);
+
     carSensors.update(car.pos);
   }
 
   void display() {
 
     car.display();
-    carSensors.display(0);
+    carSensors.display(turnAngle);
   }
 
   CarController() {
