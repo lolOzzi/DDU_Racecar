@@ -7,7 +7,7 @@ int populationSize = 100;
 CarSystem carSystem       = new CarSystem(populationSize);
 
 void setup() {
-  size(1300, 635);
+  size(1325, 635);
   trackImage = loadImage("track.png");
 }
 
