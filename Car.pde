@@ -7,7 +7,7 @@ class Car {
 
   Car() {
     pos = new PVector(110, 240);
-    vel = new PVector(0, 5);
+    vel = new PVector(0, 10);
     size = new PVector(10, 10);
   }
 
@@ -26,12 +26,12 @@ class Car {
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(turnAngle);
+    rectMode(CENTER);
     rect(0, 0, size.x, size.y);
     popMatrix();
   }
 
   void overGround() {
-    println(pos);
     color color_car_pos = get(int(pos.x), int(pos.y));
     if (color_car_pos == -1) {
     } else   ;

@@ -7,7 +7,7 @@ class CarSensors {
   boolean[] signals;
   int angle = 45;
   int length = 25;
-  int second = 2;
+  float second = 2.5;
 
   //crash detection
   int whiteSensorFrameCount    = 0; //udenfor banen
@@ -18,6 +18,7 @@ class CarSensors {
   boolean lastGreenDetection;
   int     lastTimeInFrames      = 0;
   int     lapTimeInFrames       = -1;
+  int fastestLapTime = -1;
   int lapCount = 0;
   int checkPointCount = 0;
   int offroad = 0;
@@ -89,23 +90,27 @@ class CarSensors {
     if (lastGreenDetection && !currentGreenDetection) {  //sidst grønt - nu ikke -vi har passeret målstregen
       lapTimeInFrames = frameCount - lastTimeInFrames; //LAPTIME BEREGNES - frames nu - frames sidst
       lastTimeInFrames = frameCount;
+      if (fastestLapTime == -1 || lapTimeInFrames < fastestLapTime){
+        fastestLapTime = lapTimeInFrames;
+      }
       lapCount++;
     }
     lastGreenDetection = currentGreenDetection; //Husker om der var grønt sidst
     //count clockWiseRotationFrameCounter
 
     this.pos = pos;
-    pushMatrix();
-    translate(pos.x, pos.y);
-    
+    updateSensorVectors(vel);
+    overGround();
+  }
+  void updateSensorVectors(PVector vel) {
     if (vel.mag()!=0) {
       sensors[0].set(vel);
       sensors[0].normalize();
       sensors[0].mult(length);
+      sensors[1].set(vel);
+      sensors[1].normalize();
+      sensors[1].mult(length*second);
     }
-    //Front Sensore
-    sensors[1] = new PVector(sensors[0].x + ((length*second)/2), sensors[0].y);
-    
     sensors[2].set(sensors[0]);
     sensors[2].rotate(angle);
     
@@ -117,17 +122,10 @@ class CarSensors {
     
     sensors[5].set(sensors[1]);
     sensors[5].rotate(-angle);
-
-    popMatrix();
-    overGround();
   }
-
   void overGround() {
-    print(pos);
     for (int i = 0; i < sensors.length; i++) {
       signals[i] = get( (int) (pos.x + sensors[i].x), (int)(pos.y + sensors[i].y)) == -1;
-      println(signals[i]);
-      println(sensors[i]);
     }
   }
 }

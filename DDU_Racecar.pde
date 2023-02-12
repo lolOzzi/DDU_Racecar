@@ -3,12 +3,11 @@ import java.lang.Math;
 
 
 PImage trackImage;
-float mutationRate = 0.01;
-int populationSize = 30;
+int populationSize = 100;
 CarSystem carSystem       = new CarSystem(populationSize);
 
 void setup() {
-  size(1084, 635);
+  size(1300, 635);
   trackImage = loadImage("track.png");
 }
 
