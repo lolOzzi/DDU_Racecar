@@ -29,15 +29,15 @@ class CarController {
         child.neuralNetwork.weights[i] += random(-0.1, 0.1);
       }
     }
-    for (int i = 0; i < child.neuralNetwork.biases.length; i++) {
-      int rand = int(random(0, 2));
+    for (int i = 0; i < child.neuralNetwork.bias.length; i++) {
+      int rand = int(random(0, 2));  
       if (rand == 1) {
-        child.neuralNetwork.biases[i] = partner.neuralNetwork.biases[i];
+        child.neuralNetwork.bias[i] = partner.neuralNetwork.bias[i];
       } else {
-        child.neuralNetwork.biases[i] = neuralNetwork.biases[i];
+        child.neuralNetwork.bias[i] = neuralNetwork.bias[i];
       }
       if (random(1) < mutationRate) {
-        child.neuralNetwork.biases[i] += random(-0.1, 0.1);
+        child.neuralNetwork.bias[i] += random(-0.1, 0.1);
       }
     }
     return child;
@@ -49,7 +49,7 @@ class CarController {
     for (int i = 0; i < carSensors.signals.length; i++) {
       x[i] = int(carSensors.signals[i]);
     }
-    turnAngle = neuralNetwork.getOutput(x[1], x[3], x[5]);
+    turnAngle = neuralNetwork.getOutput(x);
     car.turnCar(turnAngle);
     car.update();
     carSensors.update(car.pos, car.vel);
